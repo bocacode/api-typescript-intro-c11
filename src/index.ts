@@ -1,7 +1,7 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import cors from 'cors'
 import 'dotenv/config'
-//@ts-ignore
+
 import { MongoClient } from 'mongodb'
 
 const app = express()
@@ -9,12 +9,16 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-const client = new MongoClient(process.env.MONGO_URI)
+const client = new MongoClient(process.env.MONGO_URI as string)
 const db = client.db('my-form-database')
 
 const customers = db.collection('customers')
 
-app.post('/', async (req, res) => {
+app.get('/', (req: Request, res: Response) => {
+	res.json({ greeting: 'Hello world!' })
+})
+
+app.post('/', async (req: Request, res: Response) => {
 	console.log('req from frontend -> ', req.body)
 
 	const newCustomer = await customers.insertOne(req.body)
